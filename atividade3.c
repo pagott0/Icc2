@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void merge(int arr[], int l, int m, int r, int *trocas, int *comparacoes)
 {
@@ -6,16 +7,14 @@ void merge(int arr[], int l, int m, int r, int *trocas, int *comparacoes)
     int n1 = m - l + 1;
     int n2 = r - m;
  
-    // Create temp arrays
     int L[n1], R[n2];
  
-    // Copy data to temp arrays L[] and R[]
     for (i = 0; i < n1; i++)
         L[i] = arr[l + i];
     for (j = 0; j < n2; j++)
         R[j] = arr[m + 1 + j];
  
-    // Merge the temp arrays back into arr[l..r
+
     i = 0;
     j = 0;
     k = l;
@@ -35,8 +34,6 @@ void merge(int arr[], int l, int m, int r, int *trocas, int *comparacoes)
         
     }
  
-    // Copy the remaining elements of L[],
-    // if there are any
     while (i < n1) {
         arr[k] = L[i];
         *trocas = *trocas + 1;
@@ -44,8 +41,7 @@ void merge(int arr[], int l, int m, int r, int *trocas, int *comparacoes)
         k++;
     }
  
-    // Copy the remaining elements of R[],
-    // if there are any
+    
     while (j < n2) {
         arr[k] = R[j];
       *trocas = *trocas + 1;
@@ -57,8 +53,9 @@ void merge(int arr[], int l, int m, int r, int *trocas, int *comparacoes)
     for(int z = l; z <= r; z++, k++) {
       *trocas = *trocas + 1;
       R[z] = arr[z];
+      
     }
-
+    
   
 }
 
@@ -75,6 +72,7 @@ void mergeSort(int arr[], int l, int r, int *trocas, int *comparacoes)
         merge(arr, l, m, r, trocas, comparacoes);
     }
     
+    
 }
 
 void insertionSort(int arr[], int n)
@@ -86,9 +84,7 @@ void insertionSort(int arr[], int n)
         j = i - 1;
         trocas++;
  
-        /* Move elements of arr[0..i-1], that are
-          greater than key, to one position ahead
-          of their current position */
+        
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
             j = j - 1;
@@ -107,30 +103,35 @@ void insertionSort(int arr[], int n)
 int main () {
   int q;
   scanf("%d", &q);
-  int v[q][100];
-  int sizes[100] = {0};
 
-  for(int i = 0; i < q; i++) {
-    int temp;
-    scanf("%d", &temp);
-    sizes[i] = temp;
-    /* for(int j = 0; j < temp; j++) {
-      scanf("%d", &v[i][j]);
-    } */
-  }
-  int k;
-  while(sizes[k] != 0){
-    for(int j = 0; j < sizes[k]; j++) {
-      scanf("%d", &v[k][j]);
+  int* sizes = (int*) malloc(q * sizeof(int));
+  int** arrays = (int**) malloc(q * sizeof(int*));
+
+
+  for (int i = 0; i < q; i++) {
+        scanf("%d", &sizes[i]);
+        arrays[i] = (int*) malloc(sizes[i] * sizeof(int));
     }
-    k++;
-  }
 
   for(int i = 0; i < q; i++) {
-        insertionSort(v[i], sizes[i]);
+    for(int j = 0; j < sizes[i]; j++) {
+        scanf("%d", &arrays[i][j]);
+      }
+    }
+
+    for(int i = 0; i < q; i++) {
+        int* arrayTemp = (int*) malloc(sizes[i] * sizeof(int));
+        for(int j = 0; j < sizes[i]; j++) {
+            arrayTemp[j] = arrays[i][j];
+        }
+
+        insertionSort(arrays[i], sizes[i]);
+
         int mergeTrocas = 0, mergeComparacoes = 0;
-        mergeSort(v[i], 0, sizes[i] - 1, &mergeTrocas, &mergeComparacoes);
+        mergeSort(arrayTemp, 0, sizes[i] - 1, &mergeTrocas, &mergeComparacoes);
         printf("M %d %d %d\n", sizes[i], mergeTrocas, mergeComparacoes);
-  }
+    }
+
+
 
 }
